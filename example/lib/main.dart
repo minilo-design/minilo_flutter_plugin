@@ -308,6 +308,38 @@ class _PreviewCanvas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = entry.previewSize;
+    final previewChild = entry.builder(context);
+
+    final Widget previewViewport;
+    if (size == null) {
+      previewViewport = SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: previewChild,
+      );
+    } else {
+      previewViewport = SizedBox(
+        width: size.width,
+        height: size.height,
+        child: ClipRect(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: size.width,
+                  minHeight: size.height,
+                ),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: previewChild,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -327,19 +359,7 @@ class _PreviewCanvas extends StatelessWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: size == null
-                ? entry.builder(context)
-                : SizedBox(
-                    width: size.width,
-                    height: size.height,
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: entry.builder(context),
-                    ),
-                  ),
-          ),
+          previewViewport,
         ],
       ),
     );
@@ -383,6 +403,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       title: 'Tile Button',
       previewSize: const Size(205, 64),
       builder: (_) => MiniloTileButton(
+        width: 205,
         label: 'Go to profile',
         leading: const Icon(Icons.person_outline),
         onTap: () {},
@@ -453,7 +474,10 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       group: 'Inputs',
       title: 'Toggle Switch',
       previewSize: const Size(220, 72),
-      builder: (_) => const MiniloToggleSwitch(label: 'Toggle'),
+      builder: (_) => const MiniloToggleSwitch(
+        width: 220,
+        label: 'Toggle',
+      ),
     ),
     WidgetCatalogEntry(
       route: '/inputs/filter-button',

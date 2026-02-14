@@ -27,6 +27,7 @@ class MiniloPrimaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final minilo = context.minilo;
     final interactive = enabled && !loading && onPressed != null;
+    final verticalPadding = ((height - 24) / 2).clamp(0.0, 999.0);
 
     return Opacity(
       opacity: enabled ? 1 : 0.5,
@@ -43,8 +44,11 @@ class MiniloPrimaryButton extends StatelessWidget {
             disabledForegroundColor: minilo.colors.white,
             padding: EdgeInsets.symmetric(
               horizontal: horizontalPadding,
-              vertical: 14,
+              vertical: verticalPadding,
             ),
+            minimumSize: const Size(0, 0),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(4),
             ),

@@ -33,6 +33,8 @@ class MiniloWebPagination extends StatelessWidget {
       return List<int>.generate(4, (i) => base + i);
     }
 
+    final pages = visiblePages();
+
     Widget pageButton({
       required Widget child,
       required VoidCallback? onTap,
@@ -46,6 +48,11 @@ class MiniloWebPagination extends StatelessWidget {
           onPressed: onTap,
           style: OutlinedButton.styleFrom(
             padding: EdgeInsets.zero,
+            minimumSize: const Size(42, 42),
+            fixedSize: const Size(42, 42),
+            maximumSize: const Size(42, 42),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            visualDensity: VisualDensity.compact,
             backgroundColor:
                 active ? const Color(0xFF003078) : const Color(0xFFFFFFFF),
             side: BorderSide(
@@ -105,6 +112,10 @@ class MiniloWebPagination extends StatelessWidget {
                           const Spacer(),
                           PopupMenuButton<int>(
                             tooltip: '',
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints.tightFor(
+                                width: 20, height: 20),
+                            iconSize: 20,
                             onSelected: onPageSizeChanged,
                             itemBuilder: (_) {
                               return pageSizeOptions
@@ -141,7 +152,7 @@ class MiniloWebPagination extends StatelessWidget {
               ),
               const Spacer(),
               SizedBox(
-                width: 247,
+                width: 42.0 * (pages.length + 2),
                 height: 42,
                 child: Row(
                   children: [
@@ -159,7 +170,7 @@ class MiniloWebPagination extends StatelessWidget {
                         size: 16,
                       ),
                     ),
-                    ...visiblePages().map(
+                    ...pages.map(
                       (value) => pageButton(
                         active: value == page,
                         onTap: () => onPageChanged?.call(value),

@@ -121,10 +121,18 @@ class MiniloCardLargeVerticalList extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Row(
+                Wrap(
+                  spacing: 16,
+                  runSpacing: 4,
                   children: [
                     TextButton.icon(
                       onPressed: onApprove,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
                       icon: const Icon(Icons.edit_outlined,
                           size: 15, color: Color(0xFF003078)),
                       label: Text(
@@ -138,9 +146,14 @@ class MiniloCardLargeVerticalList extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16),
                     TextButton.icon(
                       onPressed: onReject,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: const Size(0, 0),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
+                      ),
                       icon: const Icon(Icons.delete_outline,
                           size: 17, color: Color(0xFFD4351C)),
                       label: Text(

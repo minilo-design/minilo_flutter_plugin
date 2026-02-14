@@ -56,6 +56,13 @@ class _MiniloTextFieldWithTooltipState
             trailing: widget.showInfoIcon
                 ? IconButton(
                     onPressed: _toggleTooltip,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 24,
+                      height: 24,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    splashRadius: 14,
                     icon: const Icon(
                       Icons.info_outline,
                       size: 24,

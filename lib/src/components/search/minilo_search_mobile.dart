@@ -103,6 +103,13 @@ class MiniloSearchMobile extends StatelessWidget {
                       if (isTyping || isTyped)
                         IconButton(
                           onPressed: onClear,
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints.tightFor(
+                            width: 20,
+                            height: 20,
+                          ),
+                          visualDensity: VisualDensity.compact,
+                          splashRadius: 12,
                           icon: const Icon(
                             Icons.close,
                             size: 16,
@@ -116,6 +123,13 @@ class MiniloSearchMobile extends StatelessWidget {
                       ),
                       IconButton(
                         onPressed: onVoiceTap,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints.tightFor(
+                          width: 20,
+                          height: 20,
+                        ),
+                        visualDensity: VisualDensity.compact,
+                        splashRadius: 12,
                         icon: const Icon(
                           Icons.mic_none,
                           size: 20,

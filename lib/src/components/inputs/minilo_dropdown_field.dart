@@ -50,7 +50,8 @@ class MiniloDropdownField<T> extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           DropdownButtonFormField<T>(
-            initialValue: value,
+            // ignore: deprecated_member_use
+            value: value,
             onChanged: enabled ? onChanged : null,
             style: const TextStyle(
               fontFamily: 'Noto Sans',

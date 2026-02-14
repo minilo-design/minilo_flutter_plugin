@@ -80,14 +80,21 @@ class MiniloBreadcrumbs extends StatelessWidget {
     return SizedBox(
       width: 189,
       height: 32,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: children
-            .map((widget) => Padding(
-                  padding: const EdgeInsets.only(right: 3),
-                  child: widget,
-                ))
-            .toList(),
+      child: ClipRect(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: List<Widget>.generate(children.length, (index) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  right: index == children.length - 1 ? 0 : 3,
+                ),
+                child: children[index],
+              );
+            }),
+          ),
+        ),
       ),
     );
   }

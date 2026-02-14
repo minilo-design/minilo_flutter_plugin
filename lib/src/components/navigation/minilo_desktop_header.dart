@@ -188,6 +188,11 @@ class _HeaderChip extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               side: const BorderSide(color: Color(0xFFB1B4B6)),
+              minimumSize: const Size(0, 0),
+              fixedSize: Size(chip.width, 28),
+              maximumSize: Size(chip.width, 28),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              visualDensity: VisualDensity.compact,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4)),
               backgroundColor: const Color(0xFFFFFFFF),
@@ -265,7 +270,7 @@ class _ProfileBlock extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'Noto Sans',
                     fontSize: 16,
-                    height: 24 / 16,
+                    height: 22 / 16,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF191D23),
                   ),
@@ -277,7 +282,7 @@ class _ProfileBlock extends StatelessWidget {
                   style: const TextStyle(
                     fontFamily: 'Noto Sans',
                     fontSize: 12,
-                    height: 24 / 12,
+                    height: 22 / 12,
                     fontWeight: FontWeight.w400,
                     color: Color(0xFF383F43),
                   ),

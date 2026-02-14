@@ -41,15 +41,19 @@ class MiniloPageBackLink extends StatelessWidget {
               child: Icon(icon, size: 16, color: const Color(0xFF6B7280)),
             ),
             const SizedBox(width: 10),
-            Text(
-              label,
-              style: const TextStyle(
-                fontFamily: 'Inter',
-                fontSize: 14,
-                height: 24 / 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF003078),
-                decoration: TextDecoration.underline,
+            Expanded(
+              child: Text(
+                label,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'Inter',
+                  fontSize: 14,
+                  height: 24 / 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF003078),
+                  decoration: TextDecoration.underline,
+                ),
               ),
             ),
           ],

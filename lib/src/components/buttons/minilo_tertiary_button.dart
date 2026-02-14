@@ -27,6 +27,7 @@ class MiniloTertiaryButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final interactive = enabled && !loading && onPressed != null;
+    final verticalPadding = ((height - 24) / 2).clamp(0.0, 999.0);
     final foreground =
         enabled ? const Color(0xFF003078) : const Color(0xFFB1B4B6);
 
@@ -42,8 +43,11 @@ class MiniloTertiaryButton extends StatelessWidget {
           disabledBackgroundColor: const Color(0xFFFFFEFE),
           padding: EdgeInsets.symmetric(
             horizontal: horizontalPadding,
-            vertical: 14,
+            vertical: verticalPadding,
           ),
+          minimumSize: const Size(0, 0),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          visualDensity: VisualDensity.compact,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
           ),

@@ -112,6 +112,11 @@ class MiniloDocumentSelection extends StatelessWidget {
                 ),
                 IconButton(
                   onPressed: onRemoveTap,
+                  padding: EdgeInsets.zero,
+                  constraints:
+                      const BoxConstraints.tightFor(width: 24, height: 24),
+                  visualDensity: VisualDensity.compact,
+                  splashRadius: 14,
                   icon: const Icon(Icons.delete_outline,
                       size: 24, color: Color(0xFFD4351C)),
                 ),

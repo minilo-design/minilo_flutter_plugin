@@ -38,64 +38,85 @@ class MiniloAlertBanner extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(
-          horizontal: minilo.spacing.s4, vertical: minilo.spacing.s3),
       decoration: BoxDecoration(
         color: minilo.colors.surface,
         borderRadius: BorderRadius.circular(minilo.radius.md),
-        border: Border(
-          left: BorderSide(color: tone, width: 4),
-          top: BorderSide(color: minilo.colors.border),
-          right: BorderSide(color: minilo.colors.border),
-          bottom: BorderSide(color: minilo.colors.border),
-        ),
+        border: Border.all(color: minilo.colors.border),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.only(top: 7),
-            width: 10,
-            height: 10,
-            decoration: BoxDecoration(color: tone, shape: BoxShape.circle),
-          ),
-          SizedBox(width: minilo.spacing.s3),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(color: minilo.colors.text),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(minilo.radius.md),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 4, color: tone),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: minilo.spacing.s4,
+                    vertical: minilo.spacing.s3,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(top: 7),
+                        width: 10,
+                        height: 10,
+                        decoration:
+                            BoxDecoration(color: tone, shape: BoxShape.circle),
+                      ),
+                      SizedBox(width: minilo.spacing.s3),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              title,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(color: minilo.colors.text),
+                            ),
+                            SizedBox(height: minilo.spacing.s1),
+                            Text(
+                              message,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (dismissible) ...[
+                        SizedBox(width: minilo.spacing.s2),
+                        OutlinedButton(
+                          onPressed: onDismiss,
+                          style: OutlinedButton.styleFrom(
+                            side: BorderSide(color: minilo.colors.border),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(minilo.radius.sm),
+                            ),
+                            foregroundColor: minilo.colors.primary,
+                            textStyle: Theme.of(context).textTheme.labelMedium,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            minimumSize: const Size(0, 0),
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          child: const Text('Dismiss'),
+                        ),
+                      ],
+                    ],
+                  ),
                 ),
-                SizedBox(height: minilo.spacing.s1),
-                Text(
-                  message,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-          if (dismissible) ...[
-            SizedBox(width: minilo.spacing.s2),
-            OutlinedButton(
-              onPressed: onDismiss,
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: minilo.colors.border),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(minilo.radius.sm)),
-                foregroundColor: minilo.colors.primary,
-                textStyle: Theme.of(context).textTheme.labelMedium,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
               ),
-              child: const Text('Dismiss'),
-            ),
-          ],
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

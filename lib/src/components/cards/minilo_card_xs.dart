@@ -11,6 +11,7 @@ class MiniloCardXs extends StatelessWidget {
     required this.subtitle,
     this.timeAgo = '10 hours ago',
     this.ctaLabel = 'See Now',
+    this.width = 343,
     this.image,
     this.loading = false,
     this.onTap,
@@ -20,6 +21,7 @@ class MiniloCardXs extends StatelessWidget {
   final String subtitle;
   final String timeAgo;
   final String ctaLabel;
+  final double width;
   final Widget? image;
   final bool loading;
   final VoidCallback? onTap;
@@ -28,79 +30,82 @@ class MiniloCardXs extends StatelessWidget {
   Widget build(BuildContext context) {
     final minilo = context.minilo;
 
-    return MiniloSurface(
-      padding: EdgeInsets.all(minilo.spacing.s3),
-      borderRadius: BorderRadius.circular(minilo.radius.md),
-      child: InkWell(
+    return SizedBox(
+      width: width,
+      child: MiniloSurface(
+        padding: EdgeInsets.all(minilo.spacing.s3),
         borderRadius: BorderRadius.circular(minilo.radius.md),
-        onTap: loading ? null : onTap,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 80,
-              height: 80,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(minilo.radius.md),
-                child: loading
-                    ? const MiniloShimmerBox(width: 80, height: 80, radius: 8)
-                    : (image ?? ColoredBox(color: minilo.colors.surfaceMuted)),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(minilo.radius.md),
+          onTap: loading ? null : onTap,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 80,
+                height: 80,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(minilo.radius.md),
+                  child: loading
+                      ? const MiniloShimmerBox(width: 80, height: 80, radius: 8)
+                      : (image ?? ColoredBox(color: minilo.colors.surfaceMuted)),
+                ),
               ),
-            ),
-            SizedBox(width: minilo.spacing.s3),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              SizedBox(width: minilo.spacing.s3),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (loading)
+                      const MiniloShimmerBox(width: 120, height: 16)
+                    else
+                      Text(
+                        title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .labelMedium
+                            ?.copyWith(color: minilo.colors.text),
+                      ),
+                    SizedBox(height: minilo.spacing.s1),
+                    if (loading)
+                      const MiniloShimmerBox(width: 160, height: 12)
+                    else
+                      Text(
+                        subtitle,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                  ],
+                ),
+              ),
+              SizedBox(width: minilo.spacing.s2),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (loading)
-                    const MiniloShimmerBox(width: 120, height: 16)
+                    const MiniloShimmerBox(width: 74, height: 12)
                   else
                     Text(
-                      title,
+                      timeAgo,
                       style: Theme.of(context)
                           .textTheme
-                          .labelMedium
-                          ?.copyWith(color: minilo.colors.text),
+                          .labelSmall
+                          ?.copyWith(color: minilo.colors.black),
                     ),
                   SizedBox(height: minilo.spacing.s1),
                   if (loading)
-                    const MiniloShimmerBox(width: 160, height: 12)
+                    const MiniloShimmerBox(width: 56, height: 12)
                   else
                     Text(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodySmall,
+                      ctaLabel,
+                      style: Theme.of(context)
+                          .textTheme
+                          .labelMedium
+                          ?.copyWith(color: minilo.colors.primary),
                     ),
                 ],
               ),
-            ),
-            SizedBox(width: minilo.spacing.s2),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (loading)
-                  const MiniloShimmerBox(width: 74, height: 12)
-                else
-                  Text(
-                    timeAgo,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelSmall
-                        ?.copyWith(color: minilo.colors.black),
-                  ),
-                SizedBox(height: minilo.spacing.s1),
-                if (loading)
-                  const MiniloShimmerBox(width: 56, height: 12)
-                else
-                  Text(
-                    ctaLabel,
-                    style: Theme.of(context)
-                        .textTheme
-                        .labelMedium
-                        ?.copyWith(color: minilo.colors.primary),
-                  ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

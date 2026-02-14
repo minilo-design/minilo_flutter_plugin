@@ -83,6 +83,13 @@ class MiniloAppBar extends StatelessWidget {
                 if (showBack)
                   IconButton(
                     onPressed: onBack,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints.tightFor(
+                      width: 20,
+                      height: 20,
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    splashRadius: 12,
                     icon: const Icon(
                       Icons.arrow_back_ios_new,
                       size: 20,

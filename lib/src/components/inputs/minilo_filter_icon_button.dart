@@ -33,6 +33,11 @@ class MiniloFilterIconButton extends StatelessWidget {
                   width: 0.857143,
                 ),
                 padding: const EdgeInsets.all(12),
+                minimumSize: const Size(0, 0),
+                fixedSize: Size.square(size),
+                maximumSize: Size.square(size),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                visualDensity: VisualDensity.compact,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(3.42857),
                 ),
