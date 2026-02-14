@@ -26,6 +26,13 @@ class MiniloExampleApp extends StatelessWidget {
           );
         }
 
+        if (name == '/visual-grid') {
+          return MaterialPageRoute<void>(
+            builder: (_) => WidgetVisualGridPage(entries: entries),
+            settings: settings,
+          );
+        }
+
         for (final entry in entries) {
           if (entry.route == name) {
             return MaterialPageRoute<void>(
@@ -53,6 +60,7 @@ class WidgetCatalogEntry {
     required this.title,
     required this.builder,
     this.description,
+    this.previewSize,
   });
 
   final String route;
@@ -60,6 +68,7 @@ class WidgetCatalogEntry {
   final String title;
   final WidgetPreviewBuilder builder;
   final String? description;
+  final Size? previewSize;
 }
 
 class WidgetCatalogHome extends StatefulWidget {
@@ -135,6 +144,16 @@ class _WidgetCatalogHomeState extends State<WidgetCatalogHome> {
                 ),
               ),
             ),
+            const SizedBox(height: 12),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/visual-grid'),
+                icon: const Icon(Icons.grid_view_outlined),
+                label: const Text('Visual Grid Preview'),
+              ),
+            ),
             const SizedBox(height: 16),
             for (final group in groupOrder) ...[
               if (filtered.any((entry) => entry.group == group)) ...[
@@ -167,6 +186,87 @@ class _WidgetCatalogHomeState extends State<WidgetCatalogHome> {
   }
 }
 
+class WidgetVisualGridPage extends StatelessWidget {
+  const WidgetVisualGridPage({super.key, required this.entries});
+
+  final List<WidgetCatalogEntry> entries;
+
+  @override
+  Widget build(BuildContext context) {
+    final minilo = context.minilo;
+
+    final groups = <String, List<WidgetCatalogEntry>>{};
+    for (final entry in entries) {
+      groups.putIfAbsent(entry.group, () => <WidgetCatalogEntry>[]).add(entry);
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Visual Grid Preview')),
+      body: SafeArea(
+        child: ListView(
+          padding: EdgeInsets.all(minilo.spacing.s4),
+          children: groups.entries.map((group) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    group.key,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: group.value.map((entry) {
+                      return _WidgetPreviewTile(entry: entry);
+                    }).toList(),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+class _WidgetPreviewTile extends StatelessWidget {
+  const _WidgetPreviewTile({required this.entry});
+
+  final WidgetCatalogEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: () => Navigator.of(context).pushNamed(entry.route),
+      child: Container(
+        width: 340,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: context.minilo.colors.surface,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: context.minilo.colors.border),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              entry.title,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            const SizedBox(height: 10),
+            _PreviewCanvas(entry: entry),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class WidgetPreviewPage extends StatelessWidget {
   const WidgetPreviewPage({super.key, required this.entry});
 
@@ -192,20 +292,55 @@ class WidgetPreviewPage extends StatelessWidget {
               ),
             ],
             const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: context.minilo.colors.surface,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: context.minilo.colors.border),
-              ),
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: entry.builder(context),
-              ),
-            ),
+            _PreviewCanvas(entry: entry),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PreviewCanvas extends StatelessWidget {
+  const _PreviewCanvas({required this.entry});
+
+  final WidgetCatalogEntry entry;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = entry.previewSize;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: context.minilo.colors.surface,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: context.minilo.colors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (size != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Text(
+                '${size.width.toInt()} x ${size.height.toInt()} px',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: size == null
+                ? entry.builder(context)
+                : SizedBox(
+                    width: size.width,
+                    height: size.height,
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: entry.builder(context),
+                    ),
+                  ),
+          ),
+        ],
       ),
     );
   }
@@ -217,12 +352,14 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/buttons/primary',
       group: 'Buttons',
       title: 'Primary Button',
+      previewSize: const Size(136, 52),
       builder: (_) => MiniloPrimaryButton(label: 'Add New', onPressed: () {}),
     ),
     WidgetCatalogEntry(
       route: '/buttons/secondary',
       group: 'Buttons',
       title: 'Secondary Button',
+      previewSize: const Size(136, 52),
       builder: (_) => MiniloSecondaryButton(
         label: 'Add New',
         icon: const Icon(Icons.add),
@@ -233,6 +370,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/buttons/tertiary',
       group: 'Buttons',
       title: 'Tertiary Button',
+      previewSize: const Size(136, 52),
       builder: (_) => MiniloTertiaryButton(
         label: 'Add New',
         icon: const Icon(Icons.add),
@@ -243,6 +381,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/buttons/tile',
       group: 'Buttons',
       title: 'Tile Button',
+      previewSize: const Size(205, 64),
       builder: (_) => MiniloTileButton(
         label: 'Go to profile',
         leading: const Icon(Icons.person_outline),
@@ -253,6 +392,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/text-field',
       group: 'Inputs',
       title: 'Text Field',
+      previewSize: const Size(343, 52),
       builder: (_) => const MiniloTextField(
         label: 'Account Name',
         placeholder: 'Default State Input',
@@ -262,6 +402,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/dropdown',
       group: 'Inputs',
       title: 'Dropdown Field',
+      previewSize: const Size(343, 76),
       builder: (_) => MiniloDropdownField<String>(
         label: 'Role',
         placeholder: 'Select option',
@@ -276,6 +417,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/text-field-tooltip',
       group: 'Inputs',
       title: 'Text Field With Tooltip',
+      previewSize: const Size(343, 52),
       builder: (_) => const MiniloTextFieldWithTooltip(
         label: 'Account Name',
         placeholder: 'Filled State Input',
@@ -286,18 +428,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/text-area',
       group: 'Inputs',
       title: 'Text Area Field',
+      previewSize: const Size(343, 108),
       builder: (_) => const MiniloTextAreaField(),
     ),
     WidgetCatalogEntry(
       route: '/inputs/search-field',
       group: 'Inputs',
       title: 'Search Field',
+      previewSize: const Size(343, 48),
       builder: (_) => const MiniloSearchField(),
     ),
     WidgetCatalogEntry(
       route: '/inputs/search-desktop',
       group: 'Inputs',
       title: 'Search Bar Desktop',
+      previewSize: const Size(260, 48),
       builder: (_) => const MiniloSearchBarDesktop(
         state: MiniloSearchBarDesktopState.active,
         hintText: 'Typing',
@@ -307,18 +452,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/toggle',
       group: 'Inputs',
       title: 'Toggle Switch',
+      previewSize: const Size(220, 72),
       builder: (_) => const MiniloToggleSwitch(label: 'Toggle'),
     ),
     WidgetCatalogEntry(
       route: '/inputs/filter-button',
       group: 'Inputs',
       title: 'Filter Button',
+      previewSize: const Size(48, 48),
       builder: (_) => const MiniloFilterIconButton(active: true, count: 4),
     ),
     WidgetCatalogEntry(
       route: '/inputs/filter-chips',
       group: 'Inputs',
       title: 'Filter Chips',
+      previewSize: const Size(386, 28),
       builder: (_) => MiniloFilterChips(
         items: const [
           MiniloFilterChipItem(label: 'All', count: 37, selected: true),
@@ -333,6 +481,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/document-selection',
       group: 'Inputs',
       title: 'Document Selection',
+      previewSize: const Size(343, 195),
       builder: (_) =>
           const MiniloDocumentSelection(fileName: 'Name of the Doc.PDF'),
     ),
@@ -340,6 +489,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/document-upload',
       group: 'Inputs',
       title: 'Document Upload',
+      previewSize: const Size(420, 108),
       builder: (_) => const MiniloDocumentUpload(
         state: MiniloDocumentUploadState.upload,
       ),
@@ -348,6 +498,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/inputs/document-uploaded',
       group: 'Inputs',
       title: 'Document Uploaded State',
+      previewSize: const Size(420, 60),
       builder: (_) => const MiniloDocumentUpload(
         state: MiniloDocumentUploadState.uploaded,
         fileName: 'Uploaded file.pdf',
@@ -357,6 +508,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/selection/checkbox',
       group: 'Selection',
       title: 'Checkbox',
+      previewSize: const Size(52, 20),
       builder: (_) => const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -370,6 +522,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/selection/radio',
       group: 'Selection',
       title: 'Radio',
+      previewSize: const Size(52, 20),
       builder: (_) => const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -383,6 +536,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/selection/radio-with-text',
       group: 'Selection',
       title: 'Radio With Text',
+      previewSize: const Size(180, 20),
       builder: (_) => const MiniloRadioWithText<String>(
         label: 'Radio with Text',
         value: 'option-1',
@@ -393,6 +547,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/cards/large',
       group: 'Cards',
       title: 'Card Large',
+      previewSize: const Size(343, 368),
       builder: (_) => MiniloCardLarge(
         title: 'Candidate Profile',
         status: 'Approved',
@@ -410,6 +565,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/cards/large-vertical-list',
       group: 'Cards',
       title: 'Card Large Vertical List',
+      previewSize: const Size(323, 203),
       builder: (_) => MiniloCardLargeVerticalList(
         item: const MiniloVerticalListItem(
           title: 'Coin',
@@ -424,6 +580,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/cards/small',
       group: 'Cards',
       title: 'Card Small',
+      previewSize: const Size(194, 176),
       builder: (_) => const MiniloCardSmall(
         headline: 'Senior Flutter Engineer',
         text: 'Design and build scalable app architecture.',
@@ -434,6 +591,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/cards/xs',
       group: 'Cards',
       title: 'Card XS',
+      previewSize: const Size(343, 104),
       builder: (_) => const MiniloCardXs(
         title: 'Feed Update',
         subtitle: 'New dashboard widgets released this week.',
@@ -443,18 +601,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/cards/item',
       group: 'Cards',
       title: 'Item Card',
+      previewSize: const Size(323, 203),
       builder: (_) => const MiniloItemCard(),
     ),
     WidgetCatalogEntry(
       route: '/cards/profile',
       group: 'Cards',
       title: 'Profile Card',
+      previewSize: const Size(343, 284),
       builder: (_) => const MiniloProfileCard(),
     ),
     WidgetCatalogEntry(
       route: '/cards/accordion-list',
       group: 'Cards',
       title: 'Accordion List',
+      previewSize: const Size(343, 112),
       builder: (_) => const MiniloAccordionList(
         items: [
           MiniloAccordionListItem(
@@ -472,6 +633,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/feedback/alert-banner',
       group: 'Feedback',
       title: 'Alert Banner',
+      previewSize: const Size(375, 80),
       builder: (_) => const SizedBox(
         width: 375,
         child: MiniloAlertBanner(
@@ -486,6 +648,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/feedback/toast',
       group: 'Feedback',
       title: 'Toast',
+      previewSize: const Size(349, 216),
       builder: (_) => const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -506,6 +669,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/data/badge',
       group: 'Data Display',
       title: 'Badge',
+      previewSize: const Size(280, 56),
       builder: (_) => const Wrap(
         spacing: 8,
         runSpacing: 8,
@@ -525,6 +689,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/data/label',
       group: 'Data Display',
       title: 'Label',
+      previewSize: const Size(280, 24),
       builder: (_) => const Wrap(
         spacing: 8,
         runSpacing: 8,
@@ -541,18 +706,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/data/stat-card',
       group: 'Data Display',
       title: 'Stat Card',
+      previewSize: const Size(343, 184),
       builder: (_) => const MiniloStatCard(),
     ),
     WidgetCatalogEntry(
       route: '/navigation/page-back',
       group: 'Navigation',
       title: 'Page Back Link',
+      previewSize: const Size(81, 38),
       builder: (_) => MiniloPageBackLink(onTap: () {}),
     ),
     WidgetCatalogEntry(
       route: '/navigation/breadcrumbs',
       group: 'Navigation',
       title: 'Breadcrumbs',
+      previewSize: const Size(189, 32),
       builder: (_) => MiniloBreadcrumbs(
         items: [
           MiniloBreadcrumbItem(label: 'Home', onTap: () {}),
@@ -565,18 +733,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/navigation/app-bar',
       group: 'Navigation',
       title: 'App Bar',
+      previewSize: const Size(375, 100),
       builder: (_) => const MiniloAppBar(),
     ),
     WidgetCatalogEntry(
       route: '/navigation/app-bar-alt',
       group: 'Navigation',
       title: 'App Bar Alt',
+      previewSize: const Size(375, 100),
       builder: (_) => const MiniloAppBarAlt(title: 'My Profile'),
     ),
     WidgetCatalogEntry(
       route: '/navigation/desktop-header',
       group: 'Navigation',
       title: 'Desktop Header',
+      previewSize: const Size(1440, 80),
       builder: (_) => const MiniloDesktopHeader(
         state: MiniloDesktopHeaderState.open,
         title: 'Logo',
@@ -592,6 +763,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/navigation/bottom-nav',
       group: 'Navigation',
       title: 'Bottom Nav Bar',
+      previewSize: const Size(375, 56),
       builder: (_) => SizedBox(
         width: 375,
         child: MiniloBottomNavBar.defaultTabs(
@@ -604,6 +776,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/navigation/mobile-bottom-nav-atom',
       group: 'Navigation',
       title: 'Mobile Bottom Nav Atom',
+      previewSize: const Size(375, 56),
       builder: (_) => const MiniloMobileBottomNavAtom(
         items: [
           MiniloMobileBottomNavAtomItem(
@@ -621,6 +794,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/tabs/top-tabs',
       group: 'Tabs',
       title: 'Top Tabs',
+      previewSize: const Size(273, 48),
       builder: (_) => MiniloTopTabs(
         tabs: const ['Active Tab', 'In-Active Tab'],
         currentIndex: 0,
@@ -631,6 +805,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/tabs/tab-pills',
       group: 'Tabs',
       title: 'Tab Pills',
+      previewSize: const Size(279, 40),
       builder: (_) => MiniloTabPills(
         tabs: const ['Active tab', 'In-Active Tab'],
         currentIndex: 0,
@@ -641,6 +816,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/tabs/primary-tabs',
       group: 'Tabs',
       title: 'Primary Tabs',
+      previewSize: const Size(328, 48),
       builder: (_) => MiniloPrimaryTabs(
         tabs: const ['Primary Tab 1', 'Primary Tab 2'],
         currentIndex: 0,
@@ -651,6 +827,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/tabs/secondary-tabs',
       group: 'Tabs',
       title: 'Secondary Tabs',
+      previewSize: const Size(328, 48),
       builder: (_) => MiniloSecondaryTabs(
         tabs: const ['Secondary Tab 1', 'Secondary Tab 2'],
         currentIndex: 0,
@@ -661,6 +838,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/tabs/side-tabs',
       group: 'Tabs',
       title: 'Side Tabs',
+      previewSize: const Size(205, 280),
       builder: (_) => MiniloSideTabs(
         items: const [
           MiniloSideTabItemData(
@@ -691,6 +869,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/stepper/desktop',
       group: 'Stepper',
       title: 'Stepper Desktop',
+      previewSize: const Size(720, 96),
       builder: (_) => SizedBox(
         width: 720,
         child: MiniloStepperDesktop(
@@ -708,6 +887,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/stepper/mobile',
       group: 'Stepper',
       title: 'Stepper Mobile',
+      previewSize: const Size(375, 44),
       builder: (_) => const SizedBox(
         width: 375,
         child: MiniloStepperMobile(
@@ -721,6 +901,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/search/mobile-default',
       group: 'Search',
       title: 'Search Mobile (Default)',
+      previewSize: const Size(343, 48),
       builder: (_) =>
           const MiniloSearchMobile(state: MiniloSearchMobileState.defaultState),
     ),
@@ -728,6 +909,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/search/mobile-typing',
       group: 'Search',
       title: 'Search Mobile (Typing)',
+      previewSize: const Size(343, 48),
       builder: (_) =>
           const MiniloSearchMobile(state: MiniloSearchMobileState.typing),
     ),
@@ -735,6 +917,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/search/mobile-typed',
       group: 'Search',
       title: 'Search Mobile (Typed)',
+      previewSize: const Size(343, 592),
       builder: (_) => const MiniloSearchMobile(
         state: MiniloSearchMobileState.typed,
         recentSearches: ['News', 'New York', 'Sensex', 'Claim'],
@@ -745,6 +928,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/pagination/web',
       group: 'Pagination',
       title: 'Web Pagination',
+      previewSize: const Size(1097, 42),
       builder: (_) => MiniloWebPagination(
         page: 2,
         totalPages: 5,
@@ -758,6 +942,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/layout/section-header',
       group: 'Layout',
       title: 'Section Header',
+      previewSize: const Size(375, 156),
       builder: (_) => const SizedBox(
         width: 375,
         child: MiniloSectionHeader(
@@ -771,6 +956,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/layout/page-footer',
       group: 'Layout',
       title: 'Page Footer',
+      previewSize: const Size(375, 80),
       builder: (_) => const SizedBox(
         width: 375,
         child: MiniloPageFooter(
@@ -783,6 +969,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/layout/sidebar-tips-card',
       group: 'Layout',
       title: 'Sidebar Tips Card',
+      previewSize: const Size(250, 232),
       builder: (_) => const MiniloSidebarTipsCard(
         title: 'Tips',
         items: [
@@ -795,6 +982,7 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/charts/pie-chart-card',
       group: 'Charts',
       title: 'Pie Chart Card',
+      previewSize: const Size(343, 220),
       builder: (_) => const MiniloPieChartCard(
         title: 'Pie Chart',
         slices: [
@@ -809,18 +997,21 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
       route: '/containers/container-card',
       group: 'Containers',
       title: 'Container Card',
+      previewSize: const Size(343, 260),
       builder: (_) => const MiniloContainerCard(),
     ),
     WidgetCatalogEntry(
       route: '/containers/sample-container-one',
       group: 'Containers',
       title: 'Sample Container One',
+      previewSize: const Size(343, 320),
       builder: (_) => const MiniloSampleContainerOne(isLoading: false),
     ),
     WidgetCatalogEntry(
       route: '/more/accordion',
       group: 'More',
       title: 'Accordion',
+      previewSize: const Size(343, 72),
       builder: (_) => const SizedBox(
         width: 343,
         child: MiniloAccordion(

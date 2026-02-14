@@ -86,7 +86,7 @@ class MiniloCardSmall extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .labelMedium
-                      ?.copyWith(color: const Color(0xFF85994B)),
+                      ?.copyWith(color: minilo.colors.primary),
                 ),
             ],
           ),

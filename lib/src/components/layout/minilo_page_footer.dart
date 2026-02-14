@@ -23,7 +23,7 @@ class MiniloPageFooter extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: const BoxDecoration(
         border: Border(
-          top: BorderSide(color: Color(0xFFE9E9E9)),
+          top: BorderSide(color: Color(0xFFB1B4B6)),
         ),
       ),
       child: Row(

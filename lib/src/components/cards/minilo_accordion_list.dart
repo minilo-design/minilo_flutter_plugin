@@ -49,7 +49,7 @@ class _MiniloAccordionListState extends State<MiniloAccordionList> {
           margin: EdgeInsets.only(bottom: minilo.spacing.s2),
           decoration: BoxDecoration(
             color: minilo.colors.surface,
-            border: Border.all(color: const Color(0xFFE9E9E9)),
+            border: Border.all(color: const Color(0xFFB1B4B6)),
             borderRadius: BorderRadius.circular(minilo.radius.md),
           ),
           child: Column(
