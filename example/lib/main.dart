@@ -328,6 +328,7 @@ class _PreviewCanvas extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minWidth: size.width,
+                  maxWidth: size.width,
                   minHeight: size.height,
                 ),
                 child: Align(
@@ -1011,9 +1012,23 @@ List<WidgetCatalogEntry> buildCatalogEntries() {
         title: 'Pie Chart',
         slices: [
           MiniloPieSlice(
-              label: 'Approved', value: 62, color: Color(0xFF005A30)),
-          MiniloPieSlice(label: 'Pending', value: 30, color: Color(0xFFF89707)),
-          MiniloPieSlice(label: 'Rejected', value: 8, color: Color(0xFFD4351C)),
+            label: 'Gross Pay',
+            value: 83000,
+            formattedValue: '₹ 83,000',
+            color: Color(0xFF003078),
+          ),
+          MiniloPieSlice(
+            label: 'Total Deduction',
+            value: 12800,
+            formattedValue: '₹ 12,800',
+            color: Color(0xFFDF5743),
+          ),
+          MiniloPieSlice(
+            label: 'Net Pay',
+            value: 70200,
+            formattedValue: '₹ 70,200',
+            color: Color(0xFF629D83),
+          ),
         ],
       ),
     ),
