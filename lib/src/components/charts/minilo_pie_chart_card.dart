@@ -2,8 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
-import '../../foundation/minilo_theme.dart';
-
 class MiniloPieSlice {
   const MiniloPieSlice({
     required this.label,

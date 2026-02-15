@@ -70,7 +70,8 @@ class MiniloTextAreaField extends StatelessWidget {
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(minilo.radius.md),
                 borderSide: BorderSide(
-                    color: hasError ? minilo.colors.alert : minilo.colors.border),
+                    color:
+                        hasError ? minilo.colors.alert : minilo.colors.border),
               ),
               disabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(minilo.radius.md),

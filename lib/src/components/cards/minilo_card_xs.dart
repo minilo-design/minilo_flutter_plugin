@@ -47,7 +47,8 @@ class MiniloCardXs extends StatelessWidget {
                   borderRadius: BorderRadius.circular(minilo.radius.md),
                   child: loading
                       ? const MiniloShimmerBox(width: 80, height: 80, radius: 8)
-                      : (image ?? ColoredBox(color: minilo.colors.surfaceMuted)),
+                      : (image ??
+                          ColoredBox(color: minilo.colors.surfaceMuted)),
                 ),
               ),
               SizedBox(width: minilo.spacing.s3),
