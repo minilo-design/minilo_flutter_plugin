@@ -143,7 +143,7 @@ Widget build(BuildContext context) {
 
 ## Contributing
 
-Contributions are welcome! If you find a bug or want to suggest a feature, please open an issue on our [GitHub repository](https://github.com/minilo-design/minilo-design-system).
+Contributions are welcome! If you find a bug or want to suggest a feature, please open an issue on our [GitHub repository](https://github.com/minilo-design/minilo_flutter_plugin).
 
 ## License
 
