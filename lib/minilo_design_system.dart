@@ -22,11 +22,13 @@ export 'src/components/charts/minilo_pie_chart_card.dart';
 export 'src/components/containers/minilo_container_card.dart';
 export 'src/components/containers/minilo_sample_container_one.dart';
 
+export 'src/components/data_display/minilo_avatar.dart';
 export 'src/components/data_display/minilo_badge.dart';
 export 'src/components/data_display/minilo_label.dart';
 export 'src/components/data_display/minilo_stat_card.dart';
 
 export 'src/components/feedback/minilo_alert_banner.dart';
+export 'src/components/feedback/minilo_linear_progress.dart';
 export 'src/components/feedback/minilo_toast.dart';
 
 export 'src/components/inputs/minilo_document_selection.dart';

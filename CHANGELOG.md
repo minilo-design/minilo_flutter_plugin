@@ -1,3 +1,7 @@
+## 0.1.1
+- Added `MiniloAvatar` component validation.
+- Added `MiniloLinearProgress` component.
+
 ## 0.1.0
 
 - Initial Flutter release of Minilo Design System components.
