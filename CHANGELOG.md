@@ -1,3 +1,8 @@
+## 0.1.2
+- Improved documentation and `README.md`.
+- Added `example/README.md`.
+- Minor internal cleanup.
+
 ## 0.1.1
 - Added `MiniloAvatar` component validation.
 - Added `MiniloLinearProgress` component.
